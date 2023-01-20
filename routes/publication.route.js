@@ -17,7 +17,7 @@ router.get("/", getAllPublications);
 /**
  * Obtiene todas las publicaciones de los userId dados en un arreglo en el body.
  */
-router.get("/byUsers", getAllPublicationsByUserId);
+router.post("/byUsers", getAllPublicationsByUserId);
 
 /**
  * Obtiene UNA publicación, por ID envíado por parámetro.
