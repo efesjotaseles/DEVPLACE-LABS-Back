@@ -1,6 +1,9 @@
+const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
 const publicationRouter = require("./routes/publication.route");
+const authRouter = require("./routes/auth");
+const { register } = require("./controllers/auth");
 
 //ENV variables
 require("dotenv").config();
@@ -23,7 +26,9 @@ mongoose
   });
 
 /**ENDPOINTS */
+app.post("/auth/register", register);
 app.use("/publications", publicationRouter);
+app.use("/auth",authRouter);
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
