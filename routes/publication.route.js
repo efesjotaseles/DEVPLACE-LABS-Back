@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const {verifyToken} = require("../middleware/auth");
 const publicationSchema = require("../models/publication.model");
 const {
   getAllPublications,
@@ -9,7 +10,7 @@ const {
   deletePublication,
   findAllPublicationsByUserId,
 } = require("../controllers/publication.controller");
-const {verifyToken} = require("../middleware");
+
 
 /**ENDPOINTS */
 
@@ -25,9 +26,9 @@ router.get("/byUsers", getAllPublicationsByUserId);
  */
 router.get("/:id", getPublicationById );
 
-router.post("/", verifyToken,createPublication);
+router.post("/", verifyToken, createPublication);
 
-router.delete("/", verifyToken,deletePublication);
+router.delete("/", verifyToken, deletePublication);
 
 
 
