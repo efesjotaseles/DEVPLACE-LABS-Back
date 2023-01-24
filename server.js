@@ -16,6 +16,7 @@ const cors = require("cors");
 app.use(cors());
 
 //Conexión con MONGO.... esperando la DB
+mongoose.set("strictQuery", false);
 mongoose
   .connect(process.env.MONGO_PUBLICATIONS_DB_URI)
   .then(() => {

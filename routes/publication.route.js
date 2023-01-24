@@ -9,6 +9,7 @@ const {
   deletePublication,
   findAllPublicationsByUserId,
 } = require("../controllers/publication.controller");
+const {verifyToken} = require("../middleware");
 
 /**ENDPOINTS */
 
@@ -24,9 +25,9 @@ router.get("/byUsers", getAllPublicationsByUserId);
  */
 router.get("/:id", getPublicationById );
 
-router.post("/", createPublication);
+router.post("/", verifyToken,createPublication);
 
-router.delete("/", deletePublication);
+router.delete("/", verifyToken,deletePublication);
 
 
 

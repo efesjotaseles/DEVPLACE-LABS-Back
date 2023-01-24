@@ -16,6 +16,7 @@ const register = async (req, res) => {
       const salt = await bcrypt.genSalt();
       const passwordHash = await bcrypt.hash(password, salt);
   
+    // Creating a new User Object
       const newUser = new User({
         fname,
         lname,
@@ -23,8 +24,15 @@ const register = async (req, res) => {
         password: passwordHash,
         
       });
+      // Saving the User Object in Mongodb
       const savedUser = await newUser.save();
-      res.status(201).json(savedUser);
+
+      // Create a token
+      const token = jwt.sign({ id: savedUser._id }, process.env.JWT_SECRET, {
+      expiresIn: 86400, // 24 hours
+    });
+
+      res.status(201).json({token});
     } catch (err) {
       res.status(500).json({ error: err.message });
     }
@@ -34,15 +42,19 @@ const register = async (req, res) => {
 const login = async (req, res) => {
     try {
       const { email, password } = req.body;
+
+      // Request body email can be an email
       const user = await User.findOne({ email: email });
       if (!user) return res.status(400).json({ msg: "User does not exist. " });
   
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) return res.status(400).json({ msg: "Invalid credentials. " });
   
-      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+        expiresIn: 86400, // 24 hours
+      });
       delete user.password;
-      res.status(200).json({ token, user });
+      res.status(200).json({token});
     } catch (err) {
       res.status(500).json({ error: err.message });
     }
