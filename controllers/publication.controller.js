@@ -91,12 +91,12 @@ const toggleFavedBy = async (req, res) => {
   console.log(`favedBy original: ${favedBy}`);
 
   if (favedBy.includes(userId)) {
-    favedBy = favedBy.filter((uId) => {
-      uId !== userId;
-    });
+    const index = favedBy.indexOf(userId);
+    favedBy.splice(index, 1);
     console.log(`favedBy after filter: ${favedBy}`);
   } else {
     favedBy.push(userId);
+    console.log(`fabedBy after pushing: ${favedBy}`);
   }
 
   publicationSchema
@@ -107,8 +107,6 @@ const toggleFavedBy = async (req, res) => {
     .catch((error) => {
       res.json({ message: error });
     });
-
-  //res.json("Probando");
 };
 
 module.exports = {
