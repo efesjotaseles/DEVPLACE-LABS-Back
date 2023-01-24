@@ -79,35 +79,36 @@ const deletePublication = async (req, res) => {
  * @param {*} res
  */
 const toggleFavedBy = async (req, res) => {
-  const id = req.query.id; //???
-  console.log(id);
+  const id = req.params.id; //???
+  console.log(`id: ${id}`);
   const userId = req.params.userId; //???
-  console.log(userId);
-  await publicationSchema
-    .findById(id)
+  console.log(`userId: ${userId}`);
+  const publication = await publicationSchema.findById(id).catch((error) => {
+    res.json({ message: error });
+  });
+
+  let favedBy = publication.favedBy;
+  console.log(`favedBy original: ${favedBy}`);
+
+  if (favedBy.includes(userId)) {
+    favedBy = favedBy.filter((uId) => {
+      uId !== userId;
+    });
+    console.log(`favedBy after filter: ${favedBy}`);
+  } else {
+    favedBy.push(userId);
+  }
+
+  publicationSchema
+    .updateOne({ id: id }, { favedBy: favedBy })
     .then((data) => {
-      const publication = data;
-      let favedBy = publication.favedBy;
-      if (favedBy.includes(userId)) {
-        favedBy.filter((user) => {
-          user !== userId;
-        });
-        console.log(favedBy);
-      } else {
-        favedBy.push(userId);
-        console.log(favedBy);
-      }
-    })
-    .then(() => {
-      publicationSchema
-        .updateOne({ id: id }, { favedBy: favedBy })
-        .then((data) => {
-          res.json({ message: data });
-        });
+      res.json(data);
     })
     .catch((error) => {
       res.json({ message: error });
     });
+
+  //res.json("Probando");
 };
 
 module.exports = {

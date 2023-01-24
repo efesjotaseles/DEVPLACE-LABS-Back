@@ -28,7 +28,7 @@ router.post("/", createPublication);
 
 router.delete("/", deletePublication);
 
-router.put("/:userId", toggleFavedBy);
+router.put("/id/:id/userId/:userId", toggleFavedBy);
 
 
 
