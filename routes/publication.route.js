@@ -7,7 +7,7 @@ const {
   getAllPublicationsByUserId,
   createPublication,
   deletePublication,
-  findAllPublicationsByUserId,
+  toggleFavedBy,
 } = require("../controllers/publication.controller");
 
 /**ENDPOINTS */
@@ -27,6 +27,8 @@ router.get("/:id", getPublicationById );
 router.post("/", createPublication);
 
 router.delete("/", deletePublication);
+
+router.put("/:userId", toggleFavedBy);
 
 
 

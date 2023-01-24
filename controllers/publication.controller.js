@@ -73,6 +73,42 @@ const deletePublication = async (req, res) => {
       console.log(error);
     });
 };
+/**
+ * Use a PUT mehtod pls
+ * @param {*} req
+ * @param {*} res
+ */
+const toggleFavedBy = async (req, res) => {
+  const id = req.query.id; //???
+  console.log(id);
+  const userId = req.params.userId; //???
+  console.log(userId);
+  await publicationSchema
+    .findById(id)
+    .then((data) => {
+      const publication = data;
+      let favedBy = publication.favedBy;
+      if (favedBy.includes(userId)) {
+        favedBy.filter((user) => {
+          user !== userId;
+        });
+        console.log(favedBy);
+      } else {
+        favedBy.push(userId);
+        console.log(favedBy);
+      }
+    })
+    .then(() => {
+      publicationSchema
+        .updateOne({ id: id }, { favedBy: favedBy })
+        .then((data) => {
+          res.json({ message: data });
+        });
+    })
+    .catch((error) => {
+      res.json({ message: error });
+    });
+};
 
 module.exports = {
   getAllPublications,
@@ -80,4 +116,5 @@ module.exports = {
   getAllPublicationsByUserId,
   createPublication,
   deletePublication,
+  toggleFavedBy,
 };
