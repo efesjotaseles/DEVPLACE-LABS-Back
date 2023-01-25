@@ -65,7 +65,7 @@ const deletePublication = async (req, res) => {
   await publicationSchema
     .remove({ _id: id })
     .then((data) => {
-      res.json({ message: "Publication eliminada" });
+      res.json({ message: "Publication deleted" });
       console.log(`DELETED: ${data}`);
     })
     .catch((error) => {
