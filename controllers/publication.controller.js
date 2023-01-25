@@ -79,24 +79,19 @@ const deletePublication = async (req, res) => {
  * @param {*} res
  */
 const toggleFavedBy = async (req, res) => {
-  const id = req.params.id; //???
-  console.log(`id: ${id}`);
-  const userId = req.params.userId; //???
-  console.log(`userId: ${userId}`);
+  const id = req.params.id;
+  const userId = req.params.userId;
   const publication = await publicationSchema.findById(id).catch((error) => {
     res.json({ message: error });
   });
 
   let favedBy = publication.favedBy;
-  console.log(`favedBy original: ${favedBy}`);
 
   if (favedBy.includes(userId)) {
     const index = favedBy.indexOf(userId);
     favedBy.splice(index, 1);
-    console.log(`favedBy after filter: ${favedBy}`);
   } else {
     favedBy.push(userId);
-    console.log(`fabedBy after pushing: ${favedBy}`);
   }
 
   publicationSchema
