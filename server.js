@@ -16,18 +16,9 @@ app.use(cors());
 
 //Conexión con MONGO.... esperando la DB
 mongoose
-  .connect(process.env.MONGO_PUBLICATIONS_DB_URI)
+  .connect(process.env.MONGO_DB_URI)
   .then(() => {
     console.log("Connected to MongoDB");
-  })
-  .catch((error) => {
-    console.log(error);
-  });
-
-mongoose
-  .connect(process.env.MONGO_USERS_DB_URI)
-  .then(() => {
-    console.log("Connected to MongoDB users database");
   })
   .catch((error) => {
     console.log(error);

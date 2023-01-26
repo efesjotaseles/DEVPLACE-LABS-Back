@@ -5,6 +5,7 @@ const PublicationSchema = new Schema(
     {
         userId: {type: Number, required: true},
         date: {type: String, required: true},
+        title: String,
         content: {type: String, required: true},
         favedBy: Array
     },
