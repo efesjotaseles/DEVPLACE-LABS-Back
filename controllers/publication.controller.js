@@ -6,7 +6,7 @@ const getPublicationById = async (req, res) => {
   res.json(publication);
 };
 
-const getAllPublications = async (req, res) => {
+const getAllPublications = async (req, res, next) => {
   const publications = await publicationSchema.find();
   res.json(publications);
 };
@@ -95,13 +95,25 @@ const toggleFavedBy = async (req, res) => {
   }
 
   publicationSchema
-    .updateOne({ id: id }, { favedBy: favedBy })
+    .updateOne({ _id: id }, { favedBy: favedBy, favedCount: favedBy.length })
     .then((data) => {
       res.json(data);
     })
     .catch((error) => {
       res.json({ message: error });
     });
+};
+
+const isFavedBy = async (req, res) => {
+  const id = req.params.id;
+  const userId = req.params.userId;
+  //TODO ...
+  const publication = await publicationSchema.findById(id);
+  if (publication && publication.favedBy.includes(userId)) {
+    res.json(true);
+  }else{
+    res.json(false);
+  }
 };
 
 module.exports = {
@@ -111,4 +123,5 @@ module.exports = {
   createPublication,
   deletePublication,
   toggleFavedBy,
+  isFavedBy,
 };

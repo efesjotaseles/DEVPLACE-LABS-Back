@@ -7,7 +7,8 @@ const PublicationSchema = new Schema(
         date: {type: String, required: true},
         title: String,
         content: {type: String, required: true},
-        favedBy: Array
+        favedBy: Array,
+        favCount: Number
     },
     {collection: "publications"}
 );
