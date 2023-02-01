@@ -20,8 +20,8 @@ const getUserFriends = async (req, res) => {
       user.friends.map((id) => User.findById(id))
     );
     const formattedFriends = friends.map(
-      ({ _id, fname, lname, occupation, location, picturePath }) => {
-        return { _id, fname, lname, occupation, location, picturePath };
+      ({ _id, nick, picturePath }) => {
+        return { _id, nick, picturePath };
       }
     );
     res.status(200).json(formattedFriends);
