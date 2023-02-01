@@ -26,8 +26,18 @@ const UserSchema = new Schema(
         required: true,
         min: 5,
       },
+      picturePath: {
+        type: String,
+        default: "",
+      },
+      friends: {
+        type: Array,
+        default: [],
+      },
+      
     },
+    
     {collection: "UserInfo"}
   );
   
-  module.exports = mongoose.model("user",UserSchema);
+  module.exports = mongoose.model("user", UserSchema);
