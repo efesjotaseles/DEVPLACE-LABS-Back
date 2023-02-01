@@ -104,6 +104,7 @@ const toggleFavedBy = async (req, res) => {
     });
 };
 
+//Preguntar si es necesaria
 const isFavedBy = async (req, res) => {
   const id = req.params.id;
   const userId = req.params.userId;
@@ -111,9 +112,89 @@ const isFavedBy = async (req, res) => {
   const publication = await publicationSchema.findById(id);
   if (publication && publication.favedBy.includes(userId)) {
     res.json(true);
-  }else{
+  } else {
     res.json(false);
   }
+};
+
+const toggleLikedBy = async (req, res) => {
+  const id = req.params.id;
+  const userId = req.params.userId;
+  const publication = await publicationSchema.findById(id).catch((error) => {
+    res.json({ message: error });
+  });
+
+  let likedBy = publication.likedBy;
+  let dislikedBy = publication.dislikedBy;
+
+  if (likedBy.includes(userId)) {
+    const index = likedBy.indexOf(userId);
+    likedBy.splice(index, 1);
+  } else {
+    likedBy.push(userId); //lo agregamos en likedBy
+    //Y si está en dislikedBy, lo removemos
+    if (dislikedBy.includes(userId)) {
+      const indexAux = dislikedBy.indexOf(userId);
+      dislikedBy.splice(indexAux, 1);
+    }
+  }
+
+  publicationSchema
+    .updateOne(
+      { _id: id },
+      {
+        likedBy: likedBy,
+        likeCount: likedBy.length,
+        dislikedBy: dislikedBy,
+        dislikeCount: dislikedBy.length,
+      }
+    )
+    .then((data) => {
+      res.json(data);
+    })
+    .catch((error) => {
+      res.json({ message: error });
+    });
+};
+
+const toggleDislikedBy = async (req, res) => {
+  const id = req.params.id;
+  const userId = req.params.userId;
+  const publication = await publicationSchema.findById(id).catch((error) => {
+    res.json({ message: error });
+  });
+
+  let dislikedBy = publication.dislikedBy;
+  let likedBy = publication.likedBy;
+
+  if (dislikedBy.includes(userId)) {
+    const index = dislikedBy.indexOf(userId);
+    dislikedBy.splice(index, 1);
+  } else {
+    dislikedBy.push(userId); //lo agregamos en dislikedBy
+    //Y si está en likedBy, lo removemos
+    if (likedBy.includes(userId)) {
+      const indexAux = likedBy.indexOf(userId);
+      likedBy.splice(indexAux, 1);
+    }
+  }
+
+  publicationSchema
+    .updateOne(
+      { _id: id },
+      {
+        likedBy: likedBy,
+        likeCount: likedBy.length,
+        dislikedBy: dislikedBy,
+        dislikeCount: dislikedBy.length,
+      }
+    )
+    .then((data) => {
+      res.json(data);
+    })
+    .catch((error) => {
+      res.json({ message: error });
+    });
 };
 
 module.exports = {
@@ -124,4 +205,6 @@ module.exports = {
   deletePublication,
   toggleFavedBy,
   isFavedBy,
+  toggleLikedBy,
+  toggleDislikedBy,
 };
