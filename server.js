@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const app = express();
 const publicationRouter = require("./routes/publication.route");
 const userRouter = require('./routes/users.route');
+const userImgUpload = require("./middlewares/userImgUpload");
 
 //ENV variables
 require("dotenv").config();
@@ -27,6 +28,10 @@ mongoose
 /**ENDPOINTS */
 app.use("/publications", publicationRouter);
 app.use('/users',userRouter);
+app.use('/uploads', userImgUpload.single("userPhoto"),(req, res)=>{
+  console.log(req.file, req.body);
+  res.send("success");
+})
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
