@@ -8,6 +8,9 @@ const {
   createPublication,
   deletePublication,
   toggleFavedBy,
+  isFavedBy,
+  toggleLikedBy,
+  toggleDislikedBy,
 } = require("../controllers/publication.controller");
 
 /**ENDPOINTS */
@@ -22,16 +25,21 @@ router.post("/byUsers", getAllPublicationsByUserId);
 /**
  * Obtiene UNA publicación, por ID envíado por parámetro.
  */
-router.get("/:id", getPublicationById );
+router.get("/:id", getPublicationById);
 
 router.post("/", createPublication);
 
 router.delete("/", deletePublication);
 
-router.put("/id/:id/userId/:userId", toggleFavedBy);
+/**
+ *
+ */
+router.put("/fav/id/:id/userId/:userId", toggleFavedBy);
 
+router.get("/fav/id/:id/userId/:userId", isFavedBy);
 
-
+router.put("/like/id/:id/userId/:userId", toggleLikedBy);
+router.put("/dislike/id/:id/userId/:userId", toggleDislikedBy);
 
 /**EXPORTS */
 
