@@ -21,7 +21,7 @@ const findByUser = async (req, res) => {
   res.json(user);
 };
 
-const UpdateByUser = async (req, res) => {
+const updateByUser = async (req, res) => {
   const { id } = req.params;
   await User.updateOne({ _id: id }, req.body);
   res.json({ message: "Datos Modificados" });
@@ -33,10 +33,19 @@ const deleteByUser = async (req, res) => {
   res.json({ message: "Datos Eliminados" });
 };
 
+const uploadUserImg = async (req, res) => {
+  const { id } = req.params;
+  const userIMG_url = req.body.finalFileName;
+  console.log(`En user.controller: ${req.body.finalFileName}`);
+  await User.updateOne({ _id: id }, { userIMG_url: userIMG_url });
+  res.json({ message: "Imagen subida exitosamente" });
+};
+
 module.exports = {
   getUsers,
   createUser,
   findByUser,
-  UpdateByUser,
+  updateByUser,
   deleteByUser,
+  uploadUserImg,
 };

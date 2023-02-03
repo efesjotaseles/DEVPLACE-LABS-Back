@@ -28,10 +28,6 @@ mongoose
 /**ENDPOINTS */
 app.use("/publications", publicationRouter);
 app.use('/users',userRouter);
-app.use('/uploads', userImgUpload.single("userPhoto"),(req, res)=>{
-  console.log(req.file, req.body);
-  res.send("success");
-})
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
