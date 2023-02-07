@@ -13,7 +13,8 @@ const UserSchema = new Schema(
       type: Boolean,
       default: true,
     },
-    userIMG_url: {type: String, default: ""},
+    userIMG_url: { type: String, default: "" },
+    follows: { type: Array },
   },
   { collection: "users" }
 );
