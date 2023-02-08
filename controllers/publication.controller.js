@@ -7,7 +7,7 @@ const getPublicationById = async (req, res) => {
 };
 
 const getAllPublications = async (req, res, next) => {
-  const publications = await publicationSchema.find();
+  const publications = await publicationSchema.find().sort({ _id: -1 }); //OJO, CUANDO ESTÉ SOLUCIONADO EL TEMA DE LA FECHA, ORDENAR POR FECHA
   res.json(publications);
 };
 
@@ -24,8 +24,9 @@ const getAllPublicationsByUserId = async (req, res) => {
       .find({
         userId: { $in: userId },
       })
+      .sort({ _id: -1 })
       .then((data) => {
-        console.log(data);
+        console.log(`data a enviar: ${data}`);
         res.json(data);
       })
       .catch((error) => {
