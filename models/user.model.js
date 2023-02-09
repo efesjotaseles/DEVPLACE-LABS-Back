@@ -21,7 +21,7 @@ const UserSchema = new Schema(
       require: true,
       min: 6,
     },
-    profilePicture: {
+    userIMG_url: {
       type: String,
       default: "",
     },
@@ -29,7 +29,7 @@ const UserSchema = new Schema(
       type: String,
       default: "",
     },
-    followers: {
+    follows: {
       type: Array,
       default: [],
     },
