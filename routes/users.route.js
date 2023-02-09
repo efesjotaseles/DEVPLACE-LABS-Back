@@ -1,15 +1,15 @@
 const express = require("express");
 const router = express.Router();
-const {getUsers,createUser,findByUser,UpdateByUser,deleteByUser} = require('../controllers/user.controller');
+const { updateUser, deleteUser, getUser, followUser, unfollowUser } = require('../controllers/user.controller');
+const { registerUser, loginUser } = require('../controllers/auth');
 
-/**Get all users */
-// router.get('/', (req, res) => {
-//     res.send('FUCIONA!')
-// });
-router.get('/', getUsers);
-router.post('/', createUser);
-router.get('/:id', findByUser);
-router.put('/:id', UpdateByUser);
-router.delete('/:id', deleteByUser);
+router.post('/auth/register', registerUser)
+router.post('/auth/login', loginUser)
+
+router.get('/:id', getUser);
+router.put('/:id/follow', followUser);
+router.put('/:id/unfollow', unfollowUser);
+router.put('/:id', updateUser);
+router.delete('/:id', deleteUser);
 
 module.exports=router;

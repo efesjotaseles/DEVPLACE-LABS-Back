@@ -1,35 +1,96 @@
-const { User } = require('../models/user.model');
+const User = require('../models/user.model');
+const bcrypt = require("bcrypt");
 
-const createUser = async (req, res) => {
-    const user = User(req.body);
-    user.save().catch((error) => {console.log(error)});
-    res.json(user);
+//update user
+const updateUser =  async(req, res) => { //Seria localhost:8800/api/users/12314
+    if (req.body.userId === req.params.id || req.body.isAdmin) { //Comparo el id del body con el id del endpoint y verifico si es admin o no
+        if(req.body.password) { //Envio la password en el body
+            try {
+                const salt = await bcrypt.genSalt(10); //Genera nueva password y hash
+                req.body.password = await bcrypt.hash(req.body.password, salt);//Actualiza el password del body y el hash
+            } catch(err){
+                return res.status(500).json(err);
+            }
+        }
+        try {
+            const user = await User.findByIdAndUpdate(req.params.id, {
+                $set: req.body, //Actualiza la password del usuario
+            });
+            res.status(200).json("Account has been updated")
+        } catch(err) {
+            return res.status(500).json(err);
+        }
+    } else {
+        return res.status(403).json("You can update only your account!")
+    }
 }
 
-const getUsers = async (req, res) => {
-    const user = await User.find();
-    
-    res.json(user);
+//delete user
+const deleteUser = async(req, res) => { //Seria localhost:8800/api/users/12314
+    if (req.body.userId === req.params.id || req.body.isAdmin) { //Comparo el id del body con el id del endpoint, tambien verifico si es admin o no
+        try {
+            const user = await User.findByIdAndDelete(req.params.id);
+            res.status(200).json("Account has been deleted")
+        } catch(err) {
+            return res.status(500).json(err);
+        }
+    } else {
+        return res.status(403).json("You can delete only your account!")
+    }
 }
 
-const findByUser = async (req, res) => {
-    const { id } = req.params; 
-    const user = await User.findById(id);
-    
-    res.json(user); 
+//get user
+const getUser = async(req, res) => {
+    try{
+        const user = await User.findById(req.params.id);
+        const {password, updatedAt, ...other} = user._doc
+        res.status(200).json(other)
+    }catch(err){
+        res.status(500).json(err);
+    }
 }
 
-const UpdateByUser = async (req, res) => {
-    const { id } = req.params;
-    await User.updateOne({ _id: id }, req.body);
-    res.json({ 'message': 'Datos Modificados' });
+//follow a user
+const followUser = async (req,res) => {
+    if(req.body.userId !== req.params.id){
+        try{
+            const user = await User.findById(req.params.id);
+            const currentUser = await User.findById(req.body.userId);
+            if(!user.followers.includes(req.body.userId)) {
+                await user.updateOne({ $push: { followers: req.body.userId} });
+                await currentUser.updateOne({ $push: { followings: req.params.id} });
+                res.status(200).json("user has been followed");
+            }else{
+                res.status(403).json("you allready follow this user")
+            }
+        } catch (err) {
+        res.status(500).json(err);
+        }
+    }else{
+        res.status(403).json("you can't follow yourself!")
+    }
 }
 
-const deleteByUser = async (req, res) => {
-    const { id } = req.params; 
-    await User.remove({ _id: id });
-    res.json({ 'message': 'Datos Eliminados' });
+//unfollow a user
+const unfollowUser = async (req,res) => {
+    if(req.body.userId !== req.params.id){
+        try{
+            const user = await User.findById(req.params.id);
+            const currentUser = await User.findById(req.body.userId);
+            if(user.followers.includes(req.body.userId)) {
+                await user.updateOne({ $pull: { followers: req.body.userId} });
+                await currentUser.updateOne({ $pull: { followings: req.params.id} });
+                res.status(200).json("user has been unfollowed");
+            }else{
+                res.status(403).json("you don't follow this user yet")
+            }
+        } catch (err) {
+        res.status(500).json(err);
+        }
+    }else{
+        res.status(403).json("you can't unfollow yourself!")
+    }
 }
 
  
-module.exports = { getUsers, createUser, findByUser, UpdateByUser, deleteByUser }
+module.exports = { updateUser, deleteUser, getUser, followUser, unfollowUser }
