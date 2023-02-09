@@ -1,18 +1,22 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const helmet = require('helmet');
+const morgan = require('morgan');
 const app = express();
 const publicationRouter = require("./routes/publication.route");
 const userRouter = require('./routes/users.route');
 
-//ENV variables
-require("dotenv").config();
+//MIDDLEWARE
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-const port = process.env.PORT || 3030;
-
-//CORS
+app.use(helmet());
+app.use(morgan("common"));
 const cors = require("cors");
 app.use(cors());
+
+//ENV variables
+require("dotenv").config();
+app.use(express.urlencoded({ extended: true }));
+const port = process.env.PORT || 3030;
 
 //Conexión con MONGO.... esperando la DB
 mongoose
