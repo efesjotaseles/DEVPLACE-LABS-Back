@@ -3,6 +3,11 @@ const bcrypt = require("bcrypt");
 
 //update user
 const updateUser =  async(req, res) => { //Seria localhost:8800/api/users/12314
+    const userExist = User.findOne(req.body.userId);
+    if(!userExist){
+        return res.status(204).json("User does not Exist");
+    }
+        
     if (req.body.userId === req.params.id || req.body.isAdmin) { //Comparo el id del body con el id del endpoint y verifico si es admin o no
         if(req.body.password) { //Envio la password en el body
             try {
